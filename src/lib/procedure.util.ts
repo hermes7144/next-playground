@@ -1,4 +1,4 @@
-import { executeReadProcedure, executeWriteProcedure } from '@/app/service/db.service';
+import { executeReadProcedure, executeWriteProcedure } from '@/service/db.service';
 import { NextRequest, NextResponse } from 'next/server';
 
 /**

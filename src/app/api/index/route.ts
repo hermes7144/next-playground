@@ -1,4 +1,4 @@
-import { handleProcedureRequest } from '@/app/lib/procedure.util';
+import { handleProcedureRequest } from '@/lib/procedure.util';
 import { NextRequest } from 'next/server';
 
 const procedureMap: Record<string, string> = {

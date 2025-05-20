@@ -2,6 +2,7 @@
 
 // import { usePathname } from 'next/navigation';
 import axios from 'axios';
+import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
 
 interface ProcedureResponse<T> {
@@ -11,9 +12,7 @@ interface ProcedureResponse<T> {
 }
 
 export function useProcedure() {
-  // const pathname = usePathname();
-
-  
+  const pathname = usePathname();
 
   const callProcedure = useCallback(
     async function <T>(
@@ -21,10 +20,7 @@ export function useProcedure() {
       procedure: string,
       params: Record<string, any>
     ): Promise<T> {
-      // const apiPath = `/api${pathname.toUpperCase()}`;
-      const apiPath = `/api/ENTN/A/BAA002`;
-      
-      console.log(apiPath);
+      const apiPath = `/api${pathname.toUpperCase()}`;
       
       const res = await axios[method]<ProcedureResponse<T>>(apiPath, {
         procedure,
@@ -37,7 +33,7 @@ export function useProcedure() {
 
       return res.data.data;
     },
-    []
+    [pathname]
   );
 
   return { callProcedure };
