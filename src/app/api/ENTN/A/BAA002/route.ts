@@ -1,4 +1,5 @@
 import { handleProcedureRequest } from '@/lib/procedure.util';
+import { getSession } from '@/lib/session';
 import { NextRequest } from 'next/server';
 
 const procedureMap: Record<string, string> = {
@@ -7,9 +8,19 @@ const procedureMap: Record<string, string> = {
 };
 
 export async function POST(req: NextRequest) {
+  const session = await getSession();
+  if (!session.user) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  
   return handleProcedureRequest(req, 'read', procedureMap);
 }
 
 export async function PUT(req: NextRequest) {
+  const session = await getSession();
+  if (!session.user) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   return handleProcedureRequest(req, 'write', procedureMap);
 }
