@@ -32,13 +32,13 @@ export default function ConfirmInfoTable({ data }: ConfirmInfoTableProps) {
               <strong id="firstConfirmer">{data?.hwagjeongja}</strong>
             </td>
             <th className="textWrap Center">
-              <label htmlFor="reConfirmedAt">{data?.hwagjeong_yn ? '재확정일시' : '확정취소일시'}</label>
+              <label htmlFor="reConfirmedAt">{data?.hwagjeong_yn === 'Y' ? '재확정일시' : '확정취소일시'}</label>
             </th>
             <td className="inputWrap Center">
               <span id="reConfirmedAt">{data?.hwagjeong_dt}</span>
             </td>
             <th className="textWrap Center">
-              <label htmlFor="confirmer">{data?.hwagjeong_yn ? '확정처리자' : '확정취소자'}</label>
+              <label htmlFor="confirmer">{data?.hwagjeong_yn === 'Y' ? '확정처리자' : '확정취소자'}</label>
             </th>
             <td className="inputWrap Center">
               <strong id="confirmer">{data?.hwagjeongja}</strong>
