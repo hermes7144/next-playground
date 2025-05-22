@@ -5,11 +5,7 @@ import axios from 'axios';
 import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
 
-interface ProcedureResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-}
+
 
 export function useProcedure() {
   const pathname = usePathname();
@@ -20,9 +16,10 @@ export function useProcedure() {
       procedure: string,
       params: Record<string, any>
     ): Promise<T> {
-      const apiPath = `/api${pathname.toUpperCase()}`;
+      try {
+      const apiPath = `/api${pathname?.toUpperCase()}`;
       
-      const res = await axios[method]<ProcedureResponse<T>>(apiPath, {
+      const res = await axios[method](apiPath, {
         procedure,
         params,
       });
@@ -31,7 +28,12 @@ export function useProcedure() {
         throw new Error(res.data.message || 'Procedure failed');
       }
 
-      return res.data.data;
+      return res.data; 
+      } catch (e) {
+        console.log(e.response.data.message)
+        return e.response.data;
+      }
+
     },
     [pathname]
   );

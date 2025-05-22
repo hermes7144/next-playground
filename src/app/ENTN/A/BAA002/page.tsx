@@ -1,39 +1,32 @@
 'use client';
 
+import { useState } from 'react';
+import useSWR from 'swr';
 import ConfirmButton from '@/components/ConfirmButton';
 import ConfirmInfoTable from '@/components/ConfirmInfoTable';
-// SWR 사용
+import LoadingOverlay from '@/components/LoadingOverlay';
 import { useProcedure } from '@/hooks/useProcedure';
-import useSWR from 'swr';
+import { json } from 'stream/consumers';
 
 export default function BAA002Page() {
   const { callProcedure } = useProcedure();
+  const [isMutating, setIsMutating] = useState(false);
 
-  
-  // SWR key로 조회 파라미터를 그대로 사용
-  const key = [
-    'post',
-    '조회',
-    {
+  const fetcher = () =>
+    callProcedure('post', '조회', {
       mojib_yy: '2024',
       ibhag_gb: 'B35001',
       mojib_gb: 'NONE',
       program_id: 'BAA002',
       sabeon: '360852',
-    },
-  ] as const;
+    }).then((res) => res.data[0]);
 
-  // fetcher를 inline으로 정의
-  const { data, error, mutate } = useSWR(
-    key,
-    ([method, action, payload]) =>
-      callProcedure(method, action, payload).then((res) => res[0])
-  );
+  const { data, error, mutate } = useSWR('BAA002-조회', fetcher);
 
-const handleClick = async (flag: 'Y' | 'N') => {
-  mutate(async (prevData) => {
-    // 서버 요청 먼저
-    await callProcedure('put', '확정처리', {
+  const handleClick = async (flag: 'Y' | 'N') => {
+    setIsMutating(true); // 🔵 Start loading
+
+    const res = await callProcedure('put', '확정처리', {
       mojib_yy: '2024',
       ibhag_gb: 'B35001',
       mojib_gb: 'NONE',
@@ -43,34 +36,83 @@ const handleClick = async (flag: 'Y' | 'N') => {
       ip: '127.0.0.1',
     });
 
-    // 옵티미스틱 UI 업데이트
-    return {
-      ...prevData,
-      hwagjeong_yn: flag,
-      // hwagjeong_dt: new Date().toISOString(),
-      //hwagjeongja: '홍길동',
-    };
-  }, {
-    revalidate: true,           // 서버에서 최신 데이터 다시 가져옴
-    rollbackOnError: true,      // 실패 시 이전 데이터로 복원
-    populateCache: true,        // 캐시에 반영
-  });
+    if (res.success) {
+      alert('확정처리되었습니다');
+    } else {
+      alert(res.message);
+    }
 
-  alert('처리되었습니다.');
-};
+    await mutate(); // 데이터 갱신
+    setIsMutating(false); // 🔵 End loading
+  };
 
+  const handleButton = async () => {
+    const res = await callProcedure('post', '컬럼헤더', { report_id: 'R22' });
+    console.log(res.data[0].col_nm);
+    console.log(res.data[0].header);
+  };
+
+  const handleButton2 = async () => {
+    const res = await callProcedure('put', '등록',
+
+[
+  {
+    "mojib_yy": "2024",
+    "ibhag_gb": "B35001",
+    "mojib_gb": "B01001",
+    "mojib_cd": "34",
+    "myeonjeob_gb": "B26002",
+    "suheom_no": "1344001",
+    "gyeolsi_yn": "N",
+    "id": "@UWIN_ID",
+    "ip": "@UWIN_UserIP"
+  },
+  {
+    "mojib_yy": "2024",
+    "ibhag_gb": "B35001",
+    "mojib_gb": "B01001",
+    "mojib_cd": "34",
+    "myeonjeob_gb": "B26002",
+    "suheom_no": "1344002",
+    "gyeolsi_yn": "N",
+    "id": "@UWIN_ID",
+    "ip": "@UWIN_UserIP"
+  },
+]
+
+
+    );
+
+  };
+
+  const handleButton3 = async () => {
+    const res = await callProcedure('post', '전형료JSON', {
+      userid: 'yaint',
+      clientip: '127.0.0.1',
+      jsonData: JSON.stringify([
+        { rowstate: 'D', mojib_yy: '2024', ibhag_gb: 'B35001', mojib_gb: 'B01001', jeonhyeong_gb: 'J00013', mojib_cd: '34', jeonhyeong_amt: 30000, susuryo_amt: null },
+        { rowstate: 'D', mojib_yy: '2024', ibhag_gb: 'B35001', mojib_gb: 'B01001', jeonhyeong_gb: 'J00013', mojib_cd: '64', jeonhyeong_amt: 35000, susuryo_amt: 0 },
+      ]),
+    });
+  };
 
   if (error) return <div>에러 발생</div>;
-  if (!data) return <div>불러오는 중...</div>;
 
   return (
-      <div>
-        {data && (
-          <>
-            <ConfirmInfoTable data={data} />
-            <ConfirmButton confirmed={data.hwagjeong_yn === 'Y'} onClick={handleClick} />
-          </>
-        )}
-      </div>
-    );
-  }
+    <div style={{ position: 'relative', minHeight: '300px' }}>
+      {(!data || isMutating) && <LoadingOverlay />}
+
+      {/* ✅ 테이블은 항상 표시 */}
+      <ConfirmInfoTable data={data || {}} />
+
+      {data && (
+        <>
+          <ConfirmButton confirmed={data.hwagjeong_yn === 'Y'} onClick={handleClick} />
+          <button onClick={handleButton}>컬럼헤더</button>
+          <button onClick={handleButton2}>다중테스트</button>
+          <button onClick={handleButton3}>JSON테스트</button>
+        </>
+      )}
+    </div>
+  );
+}
