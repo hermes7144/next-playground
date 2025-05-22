@@ -1,6 +1,5 @@
 'use client';
 
-// import { usePathname } from 'next/navigation';
 import axios from 'axios';
 import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
@@ -12,14 +11,14 @@ export function useProcedure() {
 
   const callProcedure = useCallback(
     async function <T>(
-      method: 'post' | 'put',
       procedure: string,
-      params: Record<string, any>
+      params: Record<string, any>,
+      isTransaction: true | false = false 
     ): Promise<T> {
       try {
       const apiPath = `/api${pathname?.toUpperCase()}`;
       
-      const res = await axios[method](apiPath, {
+      const res = await axios[isTransaction ? 'put': 'post'](apiPath, {
         procedure,
         params,
       });
