@@ -53,36 +53,30 @@ export default function BAA002Page() {
   };
 
   const handleButton2 = async () => {
-    const res = await callProcedure('put', '등록',
-
-[
-  {
-    "mojib_yy": "2024",
-    "ibhag_gb": "B35001",
-    "mojib_gb": "B01001",
-    "mojib_cd": "34",
-    "myeonjeob_gb": "B26002",
-    "suheom_no": "1344001",
-    "gyeolsi_yn": "N",
-    "id": "@UWIN_ID",
-    "ip": "@UWIN_UserIP"
-  },
-  {
-    "mojib_yy": "2024",
-    "ibhag_gb": "B35001",
-    "mojib_gb": "B01001",
-    "mojib_cd": "34",
-    "myeonjeob_gb": "B26002",
-    "suheom_no": "1344002",
-    "gyeolsi_yn": "N",
-    "id": "@UWIN_ID",
-    "ip": "@UWIN_UserIP"
-  },
-]
-
-
-    );
-
+    const res = await callProcedure('put', '등록', [
+      {
+        mojib_yy: '2024',
+        ibhag_gb: 'B35001',
+        mojib_gb: 'B01001',
+        mojib_cd: '34',
+        myeonjeob_gb: 'B26002',
+        suheom_no: '1344001',
+        gyeolsi_yn: 'N',
+        id: '@UWIN_ID',
+        ip: '@UWIN_UserIP',
+      },
+      {
+        mojib_yy: '2024',
+        ibhag_gb: 'B35001',
+        mojib_gb: 'B01001',
+        mojib_cd: '34',
+        myeonjeob_gb: 'B26002',
+        suheom_no: '1344002',
+        gyeolsi_yn: 'N',
+        id: '@UWIN_ID',
+        ip: '@UWIN_UserIP',
+      },
+    ]);
   };
 
   const handleButton3 = async () => {
@@ -106,12 +100,18 @@ export default function BAA002Page() {
       <ConfirmInfoTable data={data || {}} />
 
       {data && (
-        <>
+        <div className='flex gap-2'>
           <ConfirmButton confirmed={data.hwagjeong_yn === 'Y'} onClick={handleClick} />
-          <button onClick={handleButton}>컬럼헤더</button>
-          <button onClick={handleButton2}>다중테스트</button>
-          <button onClick={handleButton3}>JSON테스트</button>
-        </>
+          <button className='btn' onClick={handleButton}>
+            받아오기 다중
+          </button>
+          <button className='btn' onClick={handleButton2}>
+            다중테스트
+          </button>
+          <button className='btn' onClick={handleButton3}>
+            JSON테스트
+          </button>
+        </div>
       )}
     </div>
   );

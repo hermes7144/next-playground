@@ -9,7 +9,7 @@ export default function ConfirmButton({ confirmed, onClick }: ConfirmButtonProps
       {confirmed ? (
         <button
           type="button"
-          className="bem-btn bem-btn--confirm bem-icon--check"
+          className="btn"
           onClick={() => onClick('N')}
         >
           확정취소
@@ -17,7 +17,7 @@ export default function ConfirmButton({ confirmed, onClick }: ConfirmButtonProps
       ) : (
         <button
           type="button"
-          className="bem-btn bem-btn--revert bem-icon--revert"
+          className="btn"
           onClick={() => onClick('Y')}
         >
           확정

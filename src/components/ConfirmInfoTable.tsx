@@ -5,7 +5,7 @@ type ConfirmInfoTableProps = {
 export default function ConfirmInfoTable({ data }: ConfirmInfoTableProps) {
   return (
     <div className="filters__wrap" style={{ width: '70%' }}>
-      <table className="TableStyle01" style={{ margin: 0 }} width="100%" cellSpacing="0" cellPadding="0">
+      <table className="table border-2 border-black">
         <caption>확정처리 폼입니다.</caption>
         <colgroup>
           <col width="10%" />
