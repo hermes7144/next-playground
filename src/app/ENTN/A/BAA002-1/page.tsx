@@ -1,15 +1,15 @@
 'use client';
 
+import { useState } from 'react';
+import useSWR from 'swr';
 import ConfirmButton from '@/components/ConfirmButton';
 import ConfirmInfoTable from '@/components/ConfirmInfoTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { useProcedure } from '@/hooks/useProcedure';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export default function BAA002Page() {
-  const queryClient = useQueryClient();
-
   const { callProcedure } = useProcedure();
+  const [isMutating, setIsMutating] = useState(false);
 
   const fetcher = () =>
     callProcedure('조회', {
@@ -20,42 +20,34 @@ export default function BAA002Page() {
       sabeon: '360852',
     }).then((res) => res.data[0]);
 
-  const { data, isLoading, isError } = useQuery({queryKey:['조회'], queryFn:fetcher});
+  const { data, error, mutate } = useSWR('조회', fetcher);
 
+  const handleClick = async (flag: 'Y' | 'N') => {
+    setIsMutating(true); // 🔵 Start loading
 
-   const mutating = (flag) => 
-    callProcedure(
-        '확정처리',
-        {
-          mojib_yy: '2024',
-          ibhag_gb: 'B35001',
-          mojib_gb: 'NONE',
-          program_id: 'BAA002',
-          hwagjeong_yn: flag,
-          id: '360852',
-          ip: '127.0.0.1',
-        },
-        true
-      )
-   
+    const res = await callProcedure(
+      '확정처리',
+      {
+        mojib_yy: '2024',
+        ibhag_gb: 'B35001',
+        mojib_gb: 'NONE',
+        program_id: 'BAA002',
+        hwagjeong_yn: flag,
+        id: '360852',
+        ip: '127.0.0.1',
+      },
+      true
+    );
 
-  const confirmMutation = useMutation({
-    mutationFn: (flag: 'Y' | 'N') => mutating(flag),
-    onSuccess: (res) => {
-      if (res.success) {
-        alert('처리되었습니다.')
-        queryClient.invalidateQueries({ queryKey: ['조회'] });
-      } else {
-        alert(res.message);
-      }
-      
-    },
-    onError: (error: any) => {
-      alert('확정 오류: ' + (error?.message || '알 수 없는 오류'));
-    },
-  });
+    if (res.success) {
+      alert('확정처리되었습니다');
+    } else {
+      alert(res.message);
+    }
 
-  if (isError) return <div>조회 중 에러 발생</div>;
+    await mutate(); // 데이터 갱신
+    setIsMutating(false); // 🔵 End loading
+  };
 
   const handleButton = async () => {
     const res = await callProcedure('컬럼헤더', { report_id: 'R22' });
@@ -105,15 +97,15 @@ export default function BAA002Page() {
     
   };
 
-  if (isError) return <div>에러 발생</div>;
+  if (error) return <div>에러 발생</div>;
 
   return (
     <div style={{ position: 'relative', minHeight: '300px' }}>
-      {(isLoading) && <LoadingOverlay />}
+      {(!data || isMutating) && <LoadingOverlay />}
       <ConfirmInfoTable data={data || {}} />
       {data && (
         <div className='flex gap-2'>
-          <ConfirmButton confirmed={data.hwagjeong_yn === 'Y'} onClick={confirmMutation.mutate} />
+          <ConfirmButton confirmed={data.hwagjeong_yn === 'Y'} onClick={handleClick} />
           <button className='btn' onClick={handleButton}>
             받아오기 다중
           </button>

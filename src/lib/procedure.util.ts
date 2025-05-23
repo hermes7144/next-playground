@@ -56,9 +56,10 @@ export async function handleProcedureRequest(
     }
 
     const handler = type === 'read' ? executeReadProcedure : executeWriteProcedure;
-    const data = await handler(spName, params || {});
 
-    return NextResponse.json({ success: true, data });
+    const result = await handler(spName, params || {});
+
+    return NextResponse.json({ success: true, data: result });
   } catch (error) {
     console.error(`[handleProcedureRequest] ${type.toUpperCase()} 오류:`, error);
     return NextResponse.json(
