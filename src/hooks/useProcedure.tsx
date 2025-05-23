@@ -2,9 +2,18 @@
 
 import axios from 'axios';
 import { usePathname } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export function useProcedure() {
+  const [csrfToken, setCsrfToken] = useState('');
+
+    useEffect(() => {
+    axios.get('/api/csrf-token').then(res => {
+      setCsrfToken(res.data.csrfToken);
+    });
+  }, []);
+
+
   const pathname = usePathname();
 
   const callProcedure = useCallback(
@@ -19,6 +28,10 @@ export function useProcedure() {
       const res = await axios[isTransaction ? 'put': 'post'](apiPath, {
         procedure,
         params,
+      },{
+        headers: {
+        'X-CSRF-Token': csrfToken,
+      },
       });
 
       if (!res.data.success) {
@@ -32,7 +45,7 @@ export function useProcedure() {
       }
 
     },
-    [pathname]
+    [pathname, csrfToken]
   );
 
   return { callProcedure };
