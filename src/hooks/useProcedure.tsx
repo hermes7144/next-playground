@@ -4,8 +4,6 @@ import axios from 'axios';
 import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';
 
-
-
 export function useProcedure() {
   const pathname = usePathname();
 
