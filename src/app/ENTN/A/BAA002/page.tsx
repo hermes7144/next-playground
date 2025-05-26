@@ -18,7 +18,7 @@ export default function BAA002Page() {
       mojib_gb: 'NONE',
       program_id: 'BAA002',
       sabeon: '360852',
-    }).then((res) => res.data[0]);
+    }).then((res) => res.data[0][0]);
 
   const { data, isLoading, isError } = useQuery({queryKey:['조회'], queryFn:fetcher});
 
