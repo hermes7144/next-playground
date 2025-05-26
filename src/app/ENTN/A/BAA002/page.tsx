@@ -42,8 +42,12 @@ export default function BAA002Page() {
   const confirmMutation = useMutation({
     mutationFn: (flag: 'Y' | 'N') => mutating(flag),
     onSuccess: (res) => {
+
+      console.log(res);
+      
+
       if (res.success) {
-        alert('처리되었습니다.')
+        alert(res.data || '처리되었습니다.')
         queryClient.invalidateQueries({ queryKey: ['조회'] });
       } else {
         alert(res.message);

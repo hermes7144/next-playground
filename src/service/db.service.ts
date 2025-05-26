@@ -2,7 +2,7 @@
 import { getConnectionPool, sql } from '../lib/mssql';
 import { bindParams } from '../lib/sql.util';
 
-export async function executeReadProcedure(
+export async function executeProcedure(
   procedureName: string,
   params: Record<string, string | number>
 ) {
@@ -15,7 +15,7 @@ export async function executeReadProcedure(
   return result.recordsets;
 }
 
-export async function executeWriteProcedure(
+export async function executeTxnProcedure(
   procedureName: string,
   params: Record<string, string | number> | Record<string, string | number>[]
 ) {
@@ -28,24 +28,35 @@ export async function executeWriteProcedure(
   try {
     // ── 다중 처리 ──
     if (Array.isArray(params)) {
-      const results: any[] = [];
       for (const p of params) {
         const request = transaction.request();
         bindParams(request, p);
-        const result = await request.execute(procedureName);
-        results.push(result.recordset);
+        await request.execute(procedureName);
       }
+      
       await transaction.commit();
-      return { success: true, data: results };
+      return [];
     }
 
     // ── 단일 처리 ──
     else {
       const request = transaction.request();
       bindParams(request, params);
-      const result = await request.execute(procedureName);
+
+      const execResult = await request.execute(procedureName);
+      const result = execResult.recordset?.[0];
+
+      if (result?.retCode === 'NG') {
+        throw new Error(result.retValue || 'Unknown error');
+      }
+
       await transaction.commit();
-      return { success: true, data: result.recordset };
+
+      if (result?.retCode === 'OK') {
+        return result.retValue ?? null;
+      }
+
+      return result; 
     }
   } catch (error) {
     // 오류 발생 시 반드시 롤백 후 예외 던지기

@@ -1,24 +1,16 @@
-import { executeReadProcedure, executeWriteProcedure } from '@/service/db.service';
+import { executeProcedure, executeTxnProcedure } from '@/service/db.service';
 import Tokens from 'csrf';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from './session';
 
 const tokens = new Tokens();
 
-export async function handleProcedureRequest(
-  req: NextRequest,
-  type: 'read' | 'write',
-  procedureMap: Record<string, string>
-) {
+export async function handleProcedureRequest(req: NextRequest, type: 'post' | 'put', procedureMap: Record<string, string>) {
   try {
-
-
-  const session = await getSession();
-  if (!session.user) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-  
-
+    const session = await getSession();
+    if (!session.user) {
+      return new Response('Unauthorized', { status: 401 });
+    }
 
     // 1. 쿠키에서 CSRF 시크릿 추출
     const cookieHeader = req.headers.get('cookie') || '';
@@ -49,22 +41,16 @@ export async function handleProcedureRequest(
 
     const spName = procedureMap[procedure];
     if (!spName) {
-      return NextResponse.json(
-        { success: false, message: `정의되지 않은 프로시저: ${procedure}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, message: `정의되지 않은 프로시저: ${procedure}` }, { status: 400 });
     }
 
-    const handler = type === 'read' ? executeReadProcedure : executeWriteProcedure;
+    const handler = type === 'post' ? executeProcedure : executeTxnProcedure;
 
     const result = await handler(spName, params || {});
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     console.error(`[handleProcedureRequest] ${type.toUpperCase()} 오류:`, error);
-    return NextResponse.json(
-      { success: false, message: (error as Error).message },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: (error as Error).message }, { status: 500 });
   }
 }
