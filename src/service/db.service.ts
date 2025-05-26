@@ -12,7 +12,7 @@ export async function executeReadProcedure(
   bindParams(request, params);
 
   const result = await request.execute(procedureName);
-  return result.recordset;
+  return result.recordsets;
 }
 
 export async function executeWriteProcedure(
