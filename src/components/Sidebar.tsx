@@ -3,10 +3,11 @@ import React from 'react';
 import { SidebarProvider, SidebarTrigger  } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({children}: {children: React.ReactNode}) {
   return (
     <SidebarProvider>
       <AppSidebar />
+      {children}
       <SidebarTrigger />
     </SidebarProvider>
     // <aside className="w-64 bg-gray-800 text-white p-6">

@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ReactNode } from 'react';
 import { CsrfProvider } from '@/contexts/csrf-context';
 import QueryProvider from '@/components/QueryProvider';
-import ClientLayout from './ClientLayout';
+import Sidebar from '../components/Sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/app-sidebar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -21,12 +23,19 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+
   return (
     <html lang='en'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>
           <CsrfProvider>
-            <ClientLayout>{children}</ClientLayout>
+            <SidebarProvider>
+              <AppSidebar />
+              <main className="flex-1 p-6 overflow-auto">
+                <SidebarTrigger />
+                {children}
+              </main>
+            </SidebarProvider>
           </CsrfProvider>
         </QueryProvider>
       </body>
