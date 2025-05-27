@@ -44,26 +44,27 @@ const buttonVariants = cva(
   }
 )
 
-function Button({
+const Button= React.forwardRef<HTMLButtonElement, React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & {asChild? :boolean}>(
+  ({
   className,
   variant,
   size,
   fontWeight,
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
+}, ref) => {
   const Comp = asChild ? Slot : "button"
 
-  return (
-    <Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, fontWeight, className }))}
-      {...props}
-    />
-  )
-}
+    return (
+      <Comp
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, fontWeight, className }))}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+);
 
+Button.displayName = "ForwardedButton";
 export { Button, buttonVariants }
