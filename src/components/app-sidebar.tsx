@@ -49,7 +49,6 @@ const items = [
 
 export function AppSidebar() {
   return (
-    
     <Sidebar side="left" variant="sidebar" collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
@@ -79,14 +78,38 @@ export function AppSidebar() {
                                 <Link href="#" >
                                   <Inbox></Inbox>
                                   <span>로그인</span>
-                                  <ChevronDownIcon className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible-lvl2:rotate-180" />
                                 </Link>
                               </SidebarMenuButton>
+                              <ChevronDownIcon className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible-lvl2:rotate-180" />
                             </div>
                           </CollapsibleTrigger>
                             <CollapsibleContent>
                               <SidebarMenuSub>
                                   <SidebarMenuSubItem>
+                                                            <Collapsible defaultOpen className="group/collapsible-lvl3">
+                          <CollapsibleTrigger asChild>
+                            <div className="flex items-center justify-between w-full">
+                              <SidebarMenuButton asChild className="flex-grow">
+                                <Link href="#" >
+                                  <Inbox></Inbox>
+                                  <span>로그인</span>
+                                </Link>
+                              </SidebarMenuButton>
+                              <ChevronDownIcon className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible-lvl3:rotate-180" />
+                            </div>
+                          </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <SidebarMenuSub>
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link href="/ENTN/A/BAA002">
+                                          <span>BAA002 바로가기</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                  </SidebarMenuSubItem>
+                              </SidebarMenuSub>
+                            </CollapsibleContent>
+                        </Collapsible>
                                     <SidebarMenuButton asChild>
                                         <Link href="/ENTN/A/BAA002">
                                           <span>BAA002 바로가기</span>
