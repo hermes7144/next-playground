@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarTrigger  } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
 export default function Sidebar({ isOpen, onClose }) {

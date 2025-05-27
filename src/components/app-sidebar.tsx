@@ -1,4 +1,6 @@
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import Link from "next/link";
 
 import {
   Sidebar,
@@ -9,7 +11,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuBadge,
 } from "@/components/ui/sidebar"
+
+import { ChevronDownIcon } from "lucide-react"
 
 // Menu items.
 const items = [
@@ -42,13 +49,126 @@ const items = [
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    
+    <Sidebar side="left" variant="sidebar" collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              <SidebarMenuItem>
+                <Collapsible defaultOpen className="group/collapsible-lvl1">
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton asChild className="flex justify-between items-center w-full">
+                      <Link href="#">
+                        <Home></Home>
+                        <span>home</span>
+                        <ChevronDownIcon className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible-lvl1:rotate-180" />
+                      </Link>
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+
+                  {/* 'home' 메뉴 하위 (2단계) */}
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <Collapsible defaultOpen className="group/collapsible-lvl2">
+                          <CollapsibleTrigger asChild>
+                            <div className="flex items-center justify-between w-full">
+                              <SidebarMenuButton asChild className="flex-grow">
+                                <Link href="#" >
+                                  <Inbox></Inbox>
+                                  <span>로그인</span>
+                                  <ChevronDownIcon className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible-lvl2:rotate-180" />
+                                </Link>
+                              </SidebarMenuButton>
+                            </div>
+                          </CollapsibleTrigger>
+                            <CollapsibleContent>
+                              <SidebarMenuSub>
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuButton asChild>
+                                        <Link href="/ENTN/A/BAA002">
+                                          <span>BAA002 바로가기</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                  </SidebarMenuSubItem>
+                              </SidebarMenuSub>
+                            </CollapsibleContent>
+                        </Collapsible>
+                      </SidebarMenuSubItem>
+
+                      <SidebarMenuSubItem>
+                        <SidebarMenuButton asChild>
+                          <Link href="/auth/signin"> 
+                            <span>로그인</span>
+                          </Link>
+                        </SidebarMenuButton>
+                        <SidebarMenuBadge>24</SidebarMenuBadge>
+                      </SidebarMenuSubItem>
+
+                      {/* 'baa003' 하위 메뉴 항목 */}
+                      <SidebarMenuSubItem>
+                        <SidebarMenuButton asChild>
+                          <Link href="/ENTN/A/BAA002">
+                            <span>BAA002 바로가기</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <Collapsible defaultOpen className="group/collapsible">
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton asChild className="flex justify-between items-center w-full">
+                      <Link href="#">
+                        <Home></Home>
+                        <span>home</span>
+                        <ChevronDownIcon className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                      </Link>
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+
+                  {/* 'home' 메뉴 하위 (2단계) */}
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <SidebarMenuSubItem>
+                        <SidebarMenuButton asChild>
+                          <Link href="/auth/signin"> 
+                            <span>로그인</span>
+                          </Link>
+                        </SidebarMenuButton>
+                        <SidebarMenuBadge>24</SidebarMenuBadge>
+                      </SidebarMenuSubItem>
+
+                      {/* 'baa003' 하위 메뉴 항목 */}
+                      <SidebarMenuSubItem>
+                         <SidebarMenuButton asChild>
+                          <Link href="/ENTN/A/BAA002">
+                            <span>BAA002 바로가기</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </Collapsible>
+              </SidebarMenuItem>
+
+              {/* 다른 1단계 메뉴 항목들이 있다면 여기에 추가하세요 */}
+              {/* 예시:
+              <SidebarMenuItem>
+                 <SidebarMenuButton asChild>
+                   <a href="/dashboard">
+                     // <DashboardIcon className="h-5 w-5 mr-2" />
+                     <span>Dashboard</span>
+                   </a>
+                 </SidebarMenuButton>
+              </SidebarMenuItem>
+              */}
+              {/* {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
@@ -57,7 +177,7 @@ export function AppSidebar() {
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+              ))} */}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -65,37 +185,6 @@ export function AppSidebar() {
     </Sidebar>
   )
 }
-    // <aside className="w-64 bg-gray-800 text-white p-6">
-    //     <button
-    //       className="btn btn-sm btn-ghost mb-6"
-    //       onClick={onClose}
-    //     >
-    //       닫기
-    //     </button>
-    //     <nav>
-    //       <ul className="space-y-4">
-    //         <li>
-    //     <Link
-    //       href="/ENTN/A/BAA002"
-    //       className="hover:text-primary"
-    //     >
-    //       BAA002 바로가기
-    //     </Link>
-
-    //         </li>
-    //         <li>
-    //     <Link
-    //       href="/auth/signin"
-    //       className="hover:text-primary"
-    //     >
-    //       로그인
-    //     </Link>
-    //         </li>
-    //         <li>
-    //           <a href="#" className="hover:text-primary">
-    //             메뉴3
-    //           </a>
-    //         </li>
-    //       </ul>
-    //     </nav>
-    //   </aside>
+// side = left / right -> 사이드바 위치
+// variant = sidebar / floating / inset -> 사이드바, 둥근사각형, ??
+// collapsible = icon / offcanvas / none -> 사이드메뉴 닫히면 아이콘만 보이기 / 완전히 안 보이기, 안 닫히기
