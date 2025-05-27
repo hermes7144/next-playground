@@ -12,28 +12,19 @@ export async function handleProcedureRequest(req: NextRequest, type: 'post' | 'p
       return new Response('Unauthorized', { status: 401 });
     }
 
-    // 1. 쿠키에서 CSRF 시크릿 추출
-    const cookieHeader = req.headers.get('cookie') || '';
-    const cookies = Object.fromEntries(
-      cookieHeader.split('; ').map((c) => {
-        const [key, ...v] = c.split('=');
-        return [key, decodeURIComponent(v.join('='))];
-      })
-    );
-    const secret = cookies['csrf-secret'];
+    const secret = session.csrfSecret;
     if (!secret) {
-      return NextResponse.json({ success: false, message: 'CSRF secret cookie 없음' }, { status: 403 });
+      return new Response(JSON.stringify({ message: 'CSRF 비밀키가 없습니다.' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
     }
 
-    // 2. 헤더에서 CSRF 토큰 추출
-    const token = req.headers.get('x-csrf-token');
-    if (!token) {
-      return NextResponse.json({ success: false, message: 'CSRF 토큰 헤더 없음' }, { status: 403 });
+    const csrfToken = req.headers.get('x-csrf-token');
+    if (!csrfToken) {
+      return new Response(JSON.stringify({ message: 'CSRF 토큰이 없습니다.' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
     }
 
-    // 3. 토큰 검증
-    if (!tokens.verify(secret, token)) {
-      return NextResponse.json({ success: false, message: '잘못된 CSRF 토큰' }, { status: 403 });
+    const valid = tokens.verify(secret, csrfToken);
+    if (!valid) {
+      return new Response(JSON.stringify({ message: 'CSRF 토큰 검증 실패' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
     }
 
     // 4. 요청 본문 처리

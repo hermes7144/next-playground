@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useCsrf } from '@/contexts/csrf-context';
+import axios from 'axios';
 
 export default function SigninPage() {
+  const { setCsrfToken } = useCsrf();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -13,18 +16,12 @@ export default function SigninPage() {
     e.preventDefault();
     setError("");
 
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    const data = await axios.post("/api/login", { username, password }).then(res => res.data);
 
-    if (res.ok) {
+    if (data.ok) {
+      setCsrfToken(data.csrfToken); // 토큰 Context 저장
       router.push("/"); // 로그인 성공 시 리디렉션
     } else {
-      const data = await res.json();
       setError(data?.error || "로그인 실패");
     }
   };

@@ -1,19 +1,13 @@
 'use client';
 
+import { useCsrf } from '@/contexts/csrf-context';
 import axios from 'axios';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 export function useProcedure() {
-  const [csrfToken, setCsrfToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { csrfToken } = useCsrf();
   const pathname = usePathname();
-
-  useEffect(() => {
-    axios.get('/api/csrf-token')
-      .then(res => setCsrfToken(res.data.csrfToken))
-      .finally(() => setLoading(false));
-  }, []);
 
   const callProcedure = useCallback(
     async function <T>(
@@ -52,6 +46,5 @@ export function useProcedure() {
 
   return {
     callProcedure,
-    csrfReady: !loading && !!csrfToken,
   };
 }

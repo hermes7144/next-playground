@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import Sidebar from '../components/Sidebar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-export default function ClientLayout({ children }) {
-  const queryClient = new QueryClient();
+export default function ClientLayout({ children }: { children: ReactNode }) {
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -20,9 +18,7 @@ export default function ClientLayout({ children }) {
             사이드바 열기
           </button>
         )}
-        <QueryClientProvider client={queryClient}>
           {children}
-        </QueryClientProvider>
       </main>
     </div>
   );

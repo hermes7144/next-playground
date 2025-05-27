@@ -1,22 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/session";
+import { getSession, sessionOptions } from "@/lib/session";
+import Tokens from "csrf";
+
+const tokens = new Tokens();
 
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const { username, password } = body;
 
-  // 사용자 인증 로직
   if (username === "admin" && password === "1234") {
-    const session = await getSession(req);
-    console.log('session', session);
+    // 세션 불러오기
+    const session = await getSession();
 
-    
+    // 사용자 정보 저장
     session.user = { id: 1, username };
+
+    // CSRF 시크릿 생성 및 세션 저장
+    const secret = tokens.secretSync();
+    session.csrfSecret = secret;
+
     await session.save();
 
-    
+    // CSRF 토큰 생성
+    const csrfToken = tokens.create(secret);
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, csrfToken });
   }
 
   return NextResponse.json({ ok: false }, { status: 401 });
