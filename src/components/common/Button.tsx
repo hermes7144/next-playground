@@ -54,11 +54,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         icon = icon === undefined ? <Search /> : icon;
         break;
     }
-
-    const finalClassNames = cn(
-      buttonVariants({ variant, size, fontWeight}),
-      className,
-    );
     
     const content = (
       <>
@@ -68,7 +63,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       </>
     );
     return (
-      <ShadcnUIButton className={finalClassNames} variant={variant} size={size} fontWeight={fontWeight} ref={ref} asChild={asChild} {...props}>
+      <ShadcnUIButton className={className} variant={variant} size={size} fontWeight={fontWeight} ref={ref} asChild={asChild} {...props}>
         {content}
       </ShadcnUIButton>
     )
