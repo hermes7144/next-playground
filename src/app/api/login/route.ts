@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSession, sessionOptions } from "@/lib/session";
+import { getSession } from "@/lib/session";
 import Tokens from "csrf";
 
 const tokens = new Tokens();
@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest) => {
     // 세션 불러오기
     const session = await getSession();
 
-    // 사용자 정보 저장
+    // TOOD: 디비에서 유니크값으로 id
     session.user = { id: 1, username };
 
     // CSRF 시크릿 생성 및 세션 저장

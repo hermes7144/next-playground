@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCsrf } from '@/contexts/csrf-context';
 import axios from 'axios';
 
@@ -12,6 +12,9 @@ export default function SigninPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/';
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -19,8 +22,8 @@ export default function SigninPage() {
     const data = await axios.post("/api/login", { username, password }).then(res => res.data);
 
     if (data.ok) {
-      setCsrfToken(data.csrfToken); // 토큰 Context 저장
-      router.push("/"); // 로그인 성공 시 리디렉션
+      setCsrfToken(data.csrfToken)
+      router.push(redirect);
     } else {
       setError(data?.error || "로그인 실패");
     }
