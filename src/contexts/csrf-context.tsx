@@ -1,5 +1,6 @@
 'use client';
 
+import { useSessionPing } from '@/hooks/useSessionPing';
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 type CsrfContextType = {
@@ -34,6 +35,9 @@ export function CsrfProvider({ children }: { children: React.ReactNode }) {
   const setCsrfToken = (token: string | null) => {
     setCsrfTokenState(token);
   };
+
+  // 세션 갱신용
+  useSessionPing();
 
   return (
     <CsrfContext.Provider value={{ csrfToken, setCsrfToken }}>
