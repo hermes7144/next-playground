@@ -3,9 +3,9 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { ReactNode } from 'react';
 import { CsrfProvider } from '@/contexts/csrf-context';
 import QueryProvider from '@/components/QueryProvider';
-import Sidebar from '../components/Sidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
+import LogoutButton from '@/components/LogoutButton';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,6 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <AppSidebar />
               <main className="flex-1 p-6 overflow-auto">
                 <SidebarTrigger />
+                <LogoutButton />
                 {children}
               </main>
             </SidebarProvider>
