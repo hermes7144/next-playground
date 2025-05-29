@@ -4,9 +4,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from './common/Button';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSessionPing } from '@/hooks/useSessionPing';
 
 export function SessionExpireDialog() {
-  const { user, timeLeftMs, logout, refresh, isLoading } = useAuth();
+  const { user, timeLeftMs, logout, extendSession, isLoading } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,11 +44,11 @@ export function SessionExpireDialog() {
     }
   }, [timeLeftMs, hasSession, handleLogout]);
 
-  async function extendSession() {
+  async function handleExtend() {
     setLoading(true);
     setError(null);
     try {
-      await refresh();
+      await extendSession();
       setOpen(false);
     } catch {
       setError('세션 연장에 실패했습니다.');
@@ -56,6 +57,8 @@ export function SessionExpireDialog() {
     }
   }
 
+  useSessionPing();
+  
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -65,7 +68,7 @@ export function SessionExpireDialog() {
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
         <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
-          <Button onClick={extendSession} disabled={loading || isLoading}>
+          <Button onClick={handleExtend} disabled={loading || isLoading}>
             {loading ? '연장 중...' : '세션 연장'}
           </Button>
           <Button preset='delete' onClick={handleLogout} disabled={loading || isLoading}>

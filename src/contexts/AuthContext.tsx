@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useCsrf } from './CsrfContext';
+import { useSessionPing } from '@/hooks/useSessionPing';
 
 type User = {
   id: string;
@@ -14,6 +15,7 @@ type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   timeLeftMs: number | null;   // 세션 만료까지 남은 시간 (ms)
+  extendSession: () => Promise<void>;
   refresh: () => Promise<void>;
   login: (username: string, password: string, redirect?: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -45,6 +47,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     }
   };
+  
+  const extendSession = async () => {
+    try {
+      await axios.post('/api/session/extend', {}, { withCredentials: true });
+      // 연장 성공 시 세션 정보 갱신
+      await fetchSession();
+    } catch (e) {
+      throw new Error('세션 연장 실패');
+    }
+  };
+
   // 로그인 함수
   const login = async (username: string, password: string, redirect = '/') => {
     setIsLoading(true);
@@ -90,7 +103,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
-
   return (
     <AuthContext.Provider
       value={{
@@ -98,6 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         timeLeftMs,
         refresh: fetchSession,
+        extendSession,
         login,
         logout,
         error,
