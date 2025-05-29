@@ -109,8 +109,8 @@ export default function BAA002Page() {
 
   return (
     <div style={{ position: 'relative', minHeight: '300px' }}>
-      {(isLoading) && <LoadingOverlay />}
-      <ConfirmInfoTable data={data || {}} />
+    {(isLoading || confirmMutation.status === 'pending') && <LoadingOverlay />}
+        <ConfirmInfoTable data={data || {}} />
       {data && (
         <div className='flex gap-2'>
           <ConfirmButton confirmed={data.hwagjeong_yn === 'Y'} onClick={confirmMutation.mutate} />
