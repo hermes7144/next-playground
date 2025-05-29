@@ -7,5 +7,7 @@ declare module 'iron-session' {
       id: number;
       username: string;
     };
+    sessionCreatedAt?: number;
+    lastActivityAt?: number;
   }
 }

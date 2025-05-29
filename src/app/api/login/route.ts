@@ -15,6 +15,13 @@ export const POST = async (req: NextRequest) => {
     // TOOD: 디비에서 유니크값으로 id
     session.user = { id: 1, username };
 
+    // 최초 로그인 시에만 설정
+    if (!session.sessionCreatedAt) {
+      session.sessionCreatedAt = Date.now();
+    }
+    
+    session.lastActivityAt = Date.now();
+
     // CSRF 시크릿 생성 및 세션 저장
     const secret = tokens.secretSync();
     session.csrfSecret = secret;
