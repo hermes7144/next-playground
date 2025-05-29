@@ -9,6 +9,9 @@ import LogoutButton from '@/components/LogoutButton';
 import { SessionExpireDialog } from '@/components/SessionExpireDialog';
 import { AuthProvider } from '@/contexts/AuthContext';
 
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -31,15 +34,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <QueryProvider>
           <CsrfProvider>
             <AuthProvider>
+              <Header />
               <SidebarProvider>
                 <AppSidebar />
                 <main className='flex-1 p-6 overflow-auto'>
                   <SessionExpireDialog />
                   <SidebarTrigger />
-                  <LogoutButton />
                   {children}
                 </main>
               </SidebarProvider>
+              <Footer />
             </AuthProvider>
           </CsrfProvider>
         </QueryProvider>
