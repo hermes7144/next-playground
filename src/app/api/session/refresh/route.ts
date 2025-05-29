@@ -1,6 +1,6 @@
 import { getSession } from '@/lib/session';
 
-export async function GET() {
+export async function POST() {
   const session = await getSession();
   if (!session?.user) {
     return new Response(
@@ -9,6 +9,7 @@ export async function GET() {
     );
   }
 
+  session.lastActivityAt = Date.now();
   await session.save();
 
   return new Response(
