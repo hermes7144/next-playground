@@ -1,37 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCsrf } from '@/contexts/csrf-context';
-import axios from 'axios';
+import { useSearchParams } from "next/navigation";
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginForm() {
-  const { setCsrfToken } = useCsrf();
+  const { login }  =useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const router = useRouter();
 
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
-    const data = await axios.post("/api/login", { username, password }).then(res => res.data);
-
-    if (data.ok) {
-      setCsrfToken(data.csrfToken)
-      router.push(redirect);
-    } else {
-      setError(data?.error || "로그인 실패");
-    }
+    login(username, password, redirect);
   };
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <form onSubmit={handleLogin} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1">아이디</label>
           <input
@@ -52,7 +40,6 @@ export default function LoginForm() {
             required
           />
         </div>
-        {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
           className="bg-blue-600 text-white w-full py-2 rounded hover:bg-blue-700"

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCsrf } from '@/contexts/csrf-context';
+import { useCsrf } from '@/contexts/CsrfContext';
 import axios from 'axios';
 import { usePathname } from 'next/navigation';
 import { useCallback } from 'react';

@@ -1,12 +1,13 @@
 import './globals.css';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ReactNode } from 'react';
-import { CsrfProvider } from '@/contexts/csrf-context';
+import { CsrfProvider } from '@/contexts/CsrfContext';
 import QueryProvider from '@/components/QueryProvider';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import LogoutButton from '@/components/LogoutButton';
 import { SessionExpireDialog } from '@/components/SessionExpireDialog';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -24,21 +25,22 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-
   return (
     <html lang='en'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>
           <CsrfProvider>
-            <SidebarProvider>
-              <AppSidebar />
-              <main className="flex-1 p-6 overflow-auto">
-                <SessionExpireDialog />
-                <SidebarTrigger />
-                <LogoutButton />
-                {children}
-              </main>
-            </SidebarProvider>
+            <AuthProvider>
+              <SidebarProvider>
+                <AppSidebar />
+                <main className='flex-1 p-6 overflow-auto'>
+                  <SessionExpireDialog />
+                  <SidebarTrigger />
+                  <LogoutButton />
+                  {children}
+                </main>
+              </SidebarProvider>
+            </AuthProvider>
           </CsrfProvider>
         </QueryProvider>
       </body>
