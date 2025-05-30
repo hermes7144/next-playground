@@ -16,6 +16,10 @@ export function useSessionPing(pingInterval = 60 * 5 * 1000) {
 
     const interval = setInterval(() => {
       const now = Date.now();
+
+      console.log('lastActivity.current', lastActivity.current);
+      console.log('pingInterval', pingInterval);      
+
       if (now - lastActivity.current < pingInterval) {
         extendSession();
       }

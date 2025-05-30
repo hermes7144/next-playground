@@ -26,16 +26,10 @@ const callProcedure = useCallback(
       { headers: { 'X-CSRF-Token': csrfToken } }
     );
 
-    if (!res.data.success) {
-      throw new Error(res.data.message || 'Procedure failed');
-    }
-
     return res.data;
   },
   [pathname, csrfToken]
 );
 
-  return {
-    callProcedure,
-  };
+  return { callProcedure };
 }
