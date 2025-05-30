@@ -48,7 +48,7 @@ export const AlertDialog = ({
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogAction onClick={onConfirm}>{confirmText || "YES"}</AlertDialogAction>
-                    <AlertDialogCancel onClick={onCancel}>{cancelText || "NO"}</AlertDialogCancel>
+                    {onCancel && <AlertDialogCancel onClick={onCancel}>{cancelText || "NO"}</AlertDialogCancel>}
                 </AlertDialogFooter>
             </AlertDialogContent>
         </ShadcnAlertDialog>
