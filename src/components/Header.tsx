@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import LogoutButton from '@/components/LogoutButton';
 import { useAuth } from '@/contexts/AuthContext';
 
+import { SidebarTrigger } from '@/components/ui/sidebar';
+
 export default function Header() {
   const { user } = useAuth();
   const userName = user?.username;
@@ -23,14 +25,15 @@ export default function Header() {
   
   if (!user) return <></>;
   return (
-    <header className="sticky w-full top-0 z-10 bg-white shadow-sm p-4 border-b border-gray-200">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link href="/" passHref>
+    <header className="p-2">
+      <div className="flex justify-between items-center">
+        <SidebarTrigger />
+        {/* <Link href="/" passHref>
           <div className={cn("flex items-center gap-2 cursor-pointer", "pl-4 md:pl-0")}>
             <img src="/next.svg" alt="Next.js Logo" title="Next.js" className="h-8" />
             <h2 className="text-lg font-semibold text-gray-800">하이텍정보시스템</h2>
           </div>
-        </Link>
+        </Link> */}
 
         <nav className="flex items-center space-x-4">
           {isLoggedIn ? (

@@ -36,12 +36,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <QueryProvider>
           <CsrfProvider>
             <AuthProvider>
-              <Header />
               <SidebarProvider>
                 <AppSidebar />
-                <main className='flex-1 p-6 overflow-auto'>
+                <main className='flex-1 overflow-auto'>
+                  <Header />
                   <SessionExpireDialog />
-                  <SidebarTrigger />
                   {children}
                 </main>
               </SidebarProvider>
