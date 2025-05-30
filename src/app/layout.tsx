@@ -11,6 +11,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   <SessionExpireDialog />
                   {children}
                 </main>
+                <Toaster />
               </SidebarProvider>
               <Footer />
             </AuthProvider>
