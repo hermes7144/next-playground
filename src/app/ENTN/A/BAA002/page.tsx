@@ -6,51 +6,62 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 import { useProcedure } from '@/hooks/useProcedure';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
+type ConfirmResult = {
+  success: boolean;
+  data?: string;
+  message: string;
+};
+
+type 조회결과 = {
+  name: string;
+  age: number;
+  department: string;
+  hwagjeong_yn: string;
+};
+
 export default function BAA002Page() {
   const queryClient = useQueryClient();
-
   const { callProcedure } = useProcedure();
 
   const fetcher = () =>
-    callProcedure('조회', {
+  callProcedure<{ data: 조회결과[][] }>('조회', {
       mojib_yy: '2024',
       ibhag_gb: 'B35001',
       mojib_gb: 'NONE',
       program_id: 'BAA002',
       sabeon: '360852',
-    }).then((res) => res.data[0][0]);
+    }).then((res) => res?.data[0][0]);
 
   const { data, isLoading, isError } = useQuery({queryKey:['조회'], queryFn:fetcher});
 
 
-   const mutating = (flag) => 
-    callProcedure(
-        '확정처리',
-        {
-          mojib_yy: '2024',
-          ibhag_gb: 'B35001',
-          mojib_gb: 'NONE',
-          program_id: 'BAA002',
-          hwagjeong_yn: flag,
-          id: '360852',
-          ip: '127.0.0.1',
-        },
-        true
-      )
-   
+const mutating = (): Promise<ConfirmResult> =>
+  callProcedure<ConfirmResult>(
+    '확정처리',
+    {
+      mojib_yy: '2024',
+      ibhag_gb: 'B35001',
+      mojib_gb: 'NONE',
+      program_id: 'BAA002',
+      hwagjeong_yn: data?.hwagjeong_yn === 'Y' ? 'N' : 'Y',
+      // hwagjeong_yn: 'N',
+      id: '360852',
+      ip: '127.0.0.1',
+    },
+    true
+  );
 
-  const confirmMutation = useMutation({
-    mutationFn: (flag: 'Y' | 'N') => mutating(flag),
+const confirmMutation = useMutation<ConfirmResult, Error, void>({
+    mutationFn: mutating,
     onSuccess: (res) => {
       if (res.success) {
         alert(res.data || '처리되었습니다.')
         queryClient.invalidateQueries({ queryKey: ['조회'] });
-      } else {
-        alert(res.message);
       }
-      
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
+      console.log(error);
+      
       alert('확정 오류: ' + (error?.message || '알 수 없는 오류'));
     },
   });
@@ -59,8 +70,7 @@ export default function BAA002Page() {
 
   const handleButton = async () => {
     const res = await callProcedure('컬럼헤더', { report_id: 'R22' });
-    console.log(res.data[0].col_nm);
-    console.log(res.data[0].header);
+    console.log(res);
   };
 
   const handleButton2 = async () => {

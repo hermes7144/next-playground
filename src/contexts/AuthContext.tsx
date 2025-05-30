@@ -4,7 +4,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useCsrf } from './CsrfContext';
-import { useSessionPing } from '@/hooks/useSessionPing';
 
 type User = {
   id: string;
@@ -53,7 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await axios.post('/api/session/extend', {}, { withCredentials: true });
       // 연장 성공 시 세션 정보 갱신
       await fetchSession();
-    } catch (e) {
+    } catch {
       throw new Error('세션 연장 실패');
     }
   };
