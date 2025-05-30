@@ -1,7 +1,8 @@
-import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useRef } from "react";
 
-export function useSessionPing(pingInterval = 5 * 1000) {
+export function useSessionPing(pingInterval = 60 * 5 * 1000) {
+  const { extendSession } = useAuth();
   const lastActivity = useRef(Date.now());
 
   useEffect(() => {
@@ -15,10 +16,12 @@ export function useSessionPing(pingInterval = 5 * 1000) {
 
     const interval = setInterval(() => {
       const now = Date.now();
+
+      console.log('lastActivity.current', lastActivity.current);
+      console.log('pingInterval', pingInterval);      
+
       if (now - lastActivity.current < pingInterval) {
-        axios.post("/api/session/refresh").catch(() => {
-          // 실패 시 처리 (옵션)
-        });
+        extendSession();
       }
     }, pingInterval);
 
@@ -28,5 +31,5 @@ export function useSessionPing(pingInterval = 5 * 1000) {
       window.removeEventListener("keydown", updateActivity);
       window.removeEventListener("scroll", updateActivity);
     };
-  }, [pingInterval]);
+  }, [pingInterval, extendSession]);
 }

@@ -31,3 +31,5 @@ export async function GET() {
     timeLeftMs,
   });
 }
+
+// 일단은 로그인 됐을때만 csrf 호출 처리가 필요

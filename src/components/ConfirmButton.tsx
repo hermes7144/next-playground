@@ -1,6 +1,6 @@
 type ConfirmButtonProps = {
   confirmed: boolean;
-  onClick: (flag: 'Y' | 'N') => void;
+  onClick: () => void;
 };
 
 export default function ConfirmButton({ confirmed, onClick }: ConfirmButtonProps) {
@@ -10,7 +10,7 @@ export default function ConfirmButton({ confirmed, onClick }: ConfirmButtonProps
         <button
           type="button"
           className="btn"
-          onClick={() => onClick('N')}
+          onClick={() => onClick()}
         >
           확정취소
         </button>
@@ -18,7 +18,7 @@ export default function ConfirmButton({ confirmed, onClick }: ConfirmButtonProps
         <button
           type="button"
           className="btn"
-          onClick={() => onClick('Y')}
+          onClick={() => onClick()}
         >
           확정
         </button>

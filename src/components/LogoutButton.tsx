@@ -1,26 +1,16 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
-import { useCsrf } from '@/contexts/csrf-context';
+import { useAuth } from '@/contexts/AuthContext';
+import { LogOut } from 'lucide-react';
 
 export default function LogoutButton() {
-  const router = useRouter();
-  const { setCsrfToken } = useCsrf();
-
-  const handleLogout = async () => {
-    try {
-      await axios.post('/api/logout', {}, { withCredentials: true });
-      setCsrfToken(null);
-      router.push('/auth/signin'); // 로그인 페이지로 이동
-    } catch (error) {
-      console.error('로그아웃 실패:', error);
-    }
-  };
+  const { logout } = useAuth();
 
   return (
-    <button onClick={handleLogout} className="btn text-sm hover:underline">
-      로그아웃
+    <button onClick={logout}       
+    className="flex items-center w-full px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+      <LogOut className="mr-2 h-4 w-4" />
+      <span>로그아웃</span>
     </button>
   );
 }
