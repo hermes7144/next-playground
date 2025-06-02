@@ -1,11 +1,13 @@
 'use client';
 
+import { AlertDialog } from '@/components/common/AlertDialog';
 import ConfirmButton from '@/components/ConfirmButton';
 import ConfirmInfoTable from '@/components/ConfirmInfoTable';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { useProcedure } from '@/hooks/useProcedure';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { useState } from 'react';
 
 type ConfirmResult = {
   success: boolean;
@@ -23,6 +25,7 @@ type 조회결과 = {
 export default function BAA002Page() {
   const queryClient = useQueryClient();
   const { callProcedure } = useProcedure();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const fetcher = () =>
     callProcedure<{ data: 조회결과[][] }>('조회', {
@@ -59,9 +62,7 @@ export default function BAA002Page() {
     },
 
     onError: (error) => {
-      const message = axios.isAxiosError(error)
-        ? error.response?.data?.message || error.message
-        : error.message;
+      const message = axios.isAxiosError(error) ? error.response?.data?.message || error.message : error.message;
 
       alert(`확정 오류: ${message || '알 수 없는 오류'}`);
     },
@@ -123,15 +124,30 @@ export default function BAA002Page() {
     console.log('전형료JSON', res);
   };
 
+  const dialogButton = () => {
+    setIsDialogOpen(true);
+  };
+
+  const dialogConFirmButton = () => {
+    confirmMutation.mutate();
+  };
+
   if (isError) return <div>에러 발생</div>;
 
   return (
     <div style={{ position: 'relative', minHeight: '300px' }}>
+      <AlertDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        trigger={<ConfirmButton confirmed={data?.hwagjeong_yn === 'Y'} onClick={dialogButton} />}
+        onConfirm={dialogConFirmButton}
+        onCancel={() => {}}
+      />
+
       {(isLoading || confirmMutation.status === 'pending') && <LoadingOverlay />}
       <ConfirmInfoTable data={data || {}} />
       {data && (
         <div className='flex gap-2'>
-          <ConfirmButton confirmed={data.hwagjeong_yn === 'Y'} onClick={confirmMutation.mutate} />
           <button className='btn' onClick={handleButton}>
             받아오기 다중
           </button>
